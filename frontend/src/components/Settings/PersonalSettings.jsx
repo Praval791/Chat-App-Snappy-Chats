@@ -20,7 +20,7 @@ import { ChatState } from "../../Context/ChatProvider";
 import CLICK_TO_EDIT from "../../assets/ClicktoEdit.png";
 
 const PersonalSettings = () => {
-  const [name, setName] = useState();
+  const [name, setName] = useState("");
   const [avatar, setAvatar] = useState(CLICK_TO_EDIT);
   const [width, setWidth] = useState();
   const [loadingChangeAvatar, setLoadingChangeAvatar] = useState(false);
@@ -31,8 +31,10 @@ const PersonalSettings = () => {
   const avatarSize = useBreakpointValue({ base: "md", sm: "xl", md: "2xl" });
   const elementRef = useRef(null);
   const { user } = ChatState();
+
   const postAvatar = (e) => {
-    setDisabledChangeName((disabledChangeName) => disabledChangeName);
+    setDisabledChangeName(true);
+
     const avatars = e.target.files[0];
     if (
       avatars.type === "image/jpeg" ||
@@ -57,7 +59,7 @@ const PersonalSettings = () => {
       });
       e.target.value = CLICK_TO_EDIT;
     }
-    setDisabledChangeName((disabledChangeName) => disabledChangeName);
+    setDisabledChangeName(false);
   };
 
   useEffect(() => {
@@ -109,7 +111,8 @@ const PersonalSettings = () => {
             colorScheme="blue"
             variant="outline"
             width="100%"
-            mt={"2vh"}
+            mt="2vh"
+            bg="#ebf8ff"
             className="noOutline"
             onClick={changeAvatar}
             loadingText="Changing..."
@@ -169,7 +172,8 @@ const PersonalSettings = () => {
             colorScheme="blue"
             variant="outline"
             width="100%"
-            mt={"2vh"}
+            mt="2vh"
+            bg="#ebf8ff"
             className="noOutline"
             onClick={changeName}
             loadingText="Changing..."

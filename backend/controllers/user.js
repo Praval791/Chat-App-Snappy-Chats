@@ -96,6 +96,56 @@ const sendVerificationEmail = async (req, res) => {
     throw new BadRequestError(
       `User with Email:${user.email} is already verified`
     );
+  await VerifyEmailToken.findOneAndRemove({ _userId: user._id });
+  const token = await VerifyEmailToken.create({
+    _userId: user._id,
+    token: crypto.randomBytes(16).toString("hex"),
+  });
+
+  if (!token)
+    throw new Error(
+      "Unable to create Email verification link, Please try again later!"
+    );
+  const date = new Date(
+    token.expireAt.getTime() + 86400000
+  ).toLocaleDateString();
+  const time = token.expireAt.toLocaleTimeString();
+
+  const mailOptions = {
+    from: `Snappy chat <${process.env.ADMIN_EMAIL}>`,
+    to: user.email,
+    subject: "Account Verification",
+    html: `<h2>Hello ${user.name}</h2>
+            <p>Please verify your account by clicking the link:</p>
+            <span style="margin:0 10px 0 10px" >👉🏼</span><a href="http://${req.headers.host}/api/v1/auth/verify/email/confirmation/${user.email}/${token.token}" target="_blank">Click Here</a><span style="margin:0 10px 0 10px" >👈🏼</span>
+            <br>
+            <p>This Link will be expired on <b>${date}</b> at <b>${time}</b></p>
+            `,
+  };
+  mailTransporter.sendMail(mailOptions, (err, data) => {
+    if (err) {
+      res.status(500).json({ text: err.message });
+    } else {
+      res.status(200).json({
+        text:
+          "A verification email has been sent to " +
+          user.email +
+          `. Please Check Your Spam Folder and If you not get verification Email then click on resend token.`,
+        expireAt: {
+          date,
+          time,
+        },
+      });
+    }
+  });
+};
+
+const reSendVerificationEmail = async (req, res) => {
+  const user = req.user;
+  if (user.isVerified)
+    throw new BadRequestError(
+      `User with Email:${user.email} is already verified`
+    );
   var token = await VerifyEmailToken.findOne(user._id);
   if (!token) {
     token = await VerifyEmailToken.create({
@@ -143,59 +193,12 @@ const sendVerificationEmail = async (req, res) => {
   });
 };
 
-const reSendVerificationEmail = async (req, res) => {
-  const user = req.user;
-  if (user.isVerified)
-    throw new BadRequestError(
-      `User with Email:${user.email} is already verified`
-    );
-  await VerifyEmailToken.findOneAndRemove({ _userId: user._id });
-  const token = await VerifyEmailToken.create({
-    _userId: user._id,
-    token: crypto.randomBytes(16).toString("hex"),
-  });
-
-  if (!token)
-    throw new Error(
-      "Unable to create Email verification link, Please try again later!"
-    );
-  const date = new Date(
-    token.expireAt.getTime() + 86400000
-  ).toLocaleDateString();
-  const time = token.expireAt.toLocaleTimeString();
-
-  const mailOptions = {
-    from: `Snappy chat <${process.env.ADMIN_EMAIL}>`,
-    to: user.email,
-    subject: "Account Verification",
-    html: `<h2>Hello ${user.name}</h2>
-            <p>Please verify your account by clicking the link:</p>
-            <span style="margin:0 10px 0 10px" >👉🏼</span><a href="http://${req.headers.host}/api/v1/auth/verify/email/confirmation/${user.email}/${token.token}" target="_blank">Click Here</a><span style="margin:0 10px 0 10px" >👈🏼</span>
-            <br>
-            <p>This Link will be expired on <b>${date}</b> at <b>${time}</b></p>
-            `,
-  };
-  mailTransporter.sendMail(mailOptions, (err, data) => {
-    if (err) {
-      res.status(500).json({ text: err.message });
-    } else {
-      res.status(200).json({
-        text:
-          "A verification email has been sent to " +
-          user.email +
-          `. Please Check Your Spam Folder and If you not get verification Email then click on resend token.`,
-        expireAt: {
-          date,
-          time,
-        },
-      });
-    }
-  });
-};
-
 const confirmVerificationEmail = async (req, res) => {
   const token = await VerifyEmailToken.findOne({ token: req.params.token });
-  if (!token) throw new BadRequestError();
+  if (!token)
+    throw new BadRequestError(
+      `This link is Note Valid. Verification link may have expired.`
+    );
 
   let user = await User.findById(token._userId);
 

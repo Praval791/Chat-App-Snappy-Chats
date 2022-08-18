@@ -95,6 +95,8 @@ const PasswordSettings = () => {
                 className="noOutline noBorderChange"
                 placeholder="Enter Current Password"
                 type={show ? "text" : "password"}
+                _placeholder={{ color: "rgba(66, 153, 225,0.6)" }}
+                color="rgba(66, 153, 225,0.6)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />

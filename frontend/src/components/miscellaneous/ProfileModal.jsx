@@ -63,23 +63,35 @@ const ProfileModal = ({ user, children }) => {
             justifyContent="space-between"
           >
             {user._id === currUser.user._id &&
-              (user.isVerified ? (
-                <Box d="flex" alignItems="center" justifyContent="center">
-                  <Text>Verified</Text>
-                  <Badge
-                    d="flex"
-                    backgroundClip="#7cffcb"
-                    backgroundImage="linear-gradient(315deg, #7cffcb 0%, #74f2ce 74%)"
-                    ml="1"
-                    w="20px"
-                    height="20px"
-                    borderRadius="50%"
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    <CheckIcon />
-                  </Badge>
-                </Box>
+              (user.isVerifiedEmail || user.isVerifiedPhoneNumber ? (
+                <Tooltip
+                  label={
+                    user.isVerifiedEmail && user.isVerifiedPhoneNumber
+                      ? "Email and Phone Number Verified"
+                      : user.isVerifiedEmail
+                      ? "Email Verified"
+                      : "Phone Number Verified"
+                  }
+                  hasArrow
+                  placement="bottom-end"
+                >
+                  <Box d="flex" alignItems="center" justifyContent="center">
+                    <Text>Verified</Text>
+                    <Badge
+                      d="flex"
+                      backgroundClip="#7cffcb"
+                      backgroundImage="linear-gradient(315deg, #7cffcb 0%, #74f2ce 74%)"
+                      ml="1"
+                      w="20px"
+                      height="20px"
+                      borderRadius="50%"
+                      alignItems="center"
+                      justifyContent="center"
+                    >
+                      <CheckIcon />
+                    </Badge>
+                  </Box>
+                </Tooltip>
               ) : (
                 <Tooltip
                   label="Verify your email address"

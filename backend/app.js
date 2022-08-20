@@ -76,7 +76,7 @@ app.get("/sendemail", async (req, res) => {
 // !---------------------------------------------------------------- Check------------------------------------------------
 
 // user routes
-app.use("/api/v1/auth", userRouter);
+app.use("/api/v1/user", userRouter);
 // chat routes
 app.use("/api/v1/chat", authenticateUser, chatRouter);
 // messages routes

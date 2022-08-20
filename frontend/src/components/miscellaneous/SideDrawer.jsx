@@ -93,7 +93,7 @@ function SideDrawer() {
       };
 
       const { data } = await axios.get(
-        `${apiUrl}/api/v1/auth/allUsers?search=${search}`,
+        `${apiUrl}/api/v1/user/allUsers?search=${search}`,
         config
       );
       setLoading(false);
@@ -254,7 +254,7 @@ function SideDrawer() {
                 <AvatarBadge
                   boxSize="1.25em"
                   bg={
-                    user.user.isVerified
+                    user.user.isVerifiedEmail || user.user.isVerifiedPhoneNumber
                       ? "linear-gradient(315deg, #7cffcb 0%, #74f2ce 74%)"
                       : "linear-gradient(315deg, #a40606 0%, #d98324 74%)"
                   }

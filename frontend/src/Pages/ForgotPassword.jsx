@@ -70,7 +70,7 @@ const ForgotPassword = () => {
         },
       };
       const { data } = await axios.post(
-        `${apiUrl}/api/v1/auth/password/reset/send`,
+        `${apiUrl}/api/v1/user/password/reset/send`,
         {
           email,
         },
@@ -130,7 +130,7 @@ const ForgotPassword = () => {
         },
       };
       const { data } = await axios.post(
-        `${apiUrl}/api/v1/auth/password/reset/resend`,
+        `${apiUrl}/api/v1/user/password/reset/resend`,
         {
           email,
         },
@@ -247,7 +247,7 @@ const ForgotPassword = () => {
         },
       };
       const { data } = await axios.post(
-        `${apiUrl}/api/v1/auth/password/reset/verify`,
+        `${apiUrl}/api/v1/user/password/reset/verify`,
         {
           email,
           password,

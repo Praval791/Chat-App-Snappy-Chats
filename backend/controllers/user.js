@@ -92,7 +92,7 @@ const allUsers = async (req, res) => {
 
 const sendVerificationEmail = async (req, res) => {
   const user = req.user;
-  if (user.isVerified)
+  if (user.isVerifiedEmail)
     throw new BadRequestError(
       `User with Email:${user.email} is already verified`
     );
@@ -117,7 +117,7 @@ const sendVerificationEmail = async (req, res) => {
     subject: "Account Verification",
     html: `<h2>Hello ${user.name}</h2>
             <p>Please verify your account by clicking the link:</p>
-            <span style="margin:0 10px 0 10px" >👉🏼</span><a href="http://${req.headers.host}/api/v1/auth/verify/email/confirmation/${user.email}/${token.token}" target="_blank">Click Here</a><span style="margin:0 10px 0 10px" >👈🏼</span>
+            <span style="margin:0 10px 0 10px" >👉🏼</span><a href="http://${req.headers.host}/api/v1/user/verify/email/confirmation/${user.email}/${token.token}" target="_blank">Click Here</a><span style="margin:0 10px 0 10px" >👈🏼</span>
             <br>
             <p>This Link will be expired on <b>${date}</b> at <b>${time}</b></p>
             `,
@@ -142,7 +142,7 @@ const sendVerificationEmail = async (req, res) => {
 
 const reSendVerificationEmail = async (req, res) => {
   const user = req.user;
-  if (user.isVerified)
+  if (user.isVerifiedEmail)
     throw new BadRequestError(
       `User with Email:${user.email} is already verified`
     );
@@ -169,7 +169,7 @@ const reSendVerificationEmail = async (req, res) => {
     subject: "Account Verification",
     html: `<h2>Hello ${user.name}</h2>
             <p>Please verify your account by clicking the link:</p>
-            <span style="margin:0 10px 0 10px" >👉🏼</span><a href="http://${req.headers.host}/api/v1/auth/verify/email/confirmation/${user.email}/${token.token}" target="_blank">Click Here</a><span style="margin:0 10px 0 10px" >👈🏼</span>
+            <span style="margin:0 10px 0 10px" >👉🏼</span><a href="http://${req.headers.host}/api/v1/user/verify/email/confirmation/${user.email}/${token.token}" target="_blank">Click Here</a><span style="margin:0 10px 0 10px" >👈🏼</span>
             <br>
             <p>This Link will be expired on <b>${date}</b> at <b>${time}</b></p>
             `,
@@ -204,12 +204,12 @@ const confirmVerificationEmail = async (req, res) => {
 
   if (!user) throw new UnauthenticatedError();
 
-  if (user.isVerified)
+  if (user.isVerifiedEmail)
     throw new BadRequestError(
       `User with Email:${user.email} is already verified`
     );
 
-  user.isVerified = true;
+  user.isVerifiedEmail = true;
   user.save((err, user) => {
     if (err) return new Error(`Unable to verify user`);
   });
@@ -223,7 +223,7 @@ const sendForgotPasswordOtp = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
   if (!user) throw new NotFoundError(`User with email ${email} doesn't exist`);
-  if (!user.isVerified)
+  if (!user.isVerifiedEmail)
     throw new ForbiddenRequestError(
       `User isn't verified yet. To change your forgotten password, please verify your email first!`
     );
@@ -276,7 +276,7 @@ const reSendForgotPasswordOtp = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
   if (!user) throw new NotFoundError(`User with email ${email} doesn't exist`);
-  if (!user.isVerified)
+  if (!user.isVerifiedEmail)
     throw new ForbiddenRequestError(
       `User isn't verified yet. To change your forgotten password, please verify your email first!`
     );
@@ -332,7 +332,7 @@ const verifyForgotPasswordOtp = async (req, res) => {
 
   var user = await User.findOne({ email });
   if (!user) throw new NotFoundError(`User with email ${email} doesn't exist`);
-  if (!user.isVerified)
+  if (!user.isVerifiedEmail)
     throw new ForbiddenRequestError(
       `User isn't verified yet. To change your forgotten password, please verify your email first!`
     );

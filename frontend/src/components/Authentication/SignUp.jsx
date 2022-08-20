@@ -162,7 +162,7 @@ const SignUp = () => {
         },
       };
       const { data } = await axios.post(
-        `${apiUrl}/api/v1/auth/signup`,
+        `${apiUrl}/api/v1/user/signup`,
         {
           name: name.trim(),
           email,

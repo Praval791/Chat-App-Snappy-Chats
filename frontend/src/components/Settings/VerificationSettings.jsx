@@ -35,7 +35,7 @@ const VerificationSettings = () => {
   return (
     <form style={{ width: "100%" }}>
       <VStack maxWidth={"60em"} gap="1vh">
-        {user.user.isVerified ? (
+        {user.user.isVerifiedEmail ? (
           <Tooltip
             label="Email is already verified"
             placement="bottom"
@@ -123,8 +123,7 @@ const VerificationSettings = () => {
             </Button>
           </FormControl>
         )}
-
-        {user.user.isVerified ? (
+        {user.user.isVerifiedPhoneNumber ? (
           <Tooltip
             label="Phone Number is already verified"
             placement="bottom"

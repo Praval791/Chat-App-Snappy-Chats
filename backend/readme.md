@@ -56,3 +56,4 @@ npm install && npm start
 ### TODO:
 * Adding routes for updating user information.
 * Adding multicast the updating details to required users.
+* Adding a swagger Ui

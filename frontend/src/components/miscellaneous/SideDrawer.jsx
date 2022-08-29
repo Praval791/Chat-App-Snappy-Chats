@@ -263,7 +263,7 @@ function SideDrawer() {
                 </AvatarBadge>
               </Avatar>
             </MenuButton>
-            <MenuList>
+            <MenuList zIndex={"10"}>
               <ProfileModal user={user.user}>
                 <MenuItem>My Profile</MenuItem>{" "}
               </ProfileModal>

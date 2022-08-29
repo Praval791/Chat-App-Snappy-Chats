@@ -41,6 +41,7 @@ npm install && npm start
 * Mail transmission 
 * Stores user avatars on cloud
 * Socket.io for real time messages and notifications
+* Forgot Password will only work for verified users.
 ### In Group chat
 * #### Admins Power
   - There is only single Group Admin

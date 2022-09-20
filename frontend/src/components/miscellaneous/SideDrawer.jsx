@@ -140,7 +140,7 @@ function SideDrawer() {
     }
   };
 
-  const deleteNotification = async (messages) => {
+  const deleteNotification = async (messages, chatId) => {
     try {
       const config = {
         headers: {
@@ -157,11 +157,13 @@ function SideDrawer() {
       );
       setNotificationsData(data);
       if (location.pathname !== "/chats") navigate("/chats");
-      setSelectedChat(messages.chat);
+      let chatToBeSelectable = chats.find((chat) => chat._id + "" == chatId);
+      setSelectedChat(chatToBeSelectable);
     } catch (error) {
       console.error("failed to fetch notificationsData");
       if (location.pathname !== "/chats") navigate("/chats");
-      setSelectedChat(messages.chat);
+      let chatToBeSelectable = chats.find((chat) => chat._id + "" == chatId);
+      setSelectedChat(chatToBeSelectable);
     }
   };
 
@@ -169,7 +171,8 @@ function SideDrawer() {
     let messages = notificationsData.notifications
       .filter((n) => n.chat._id === notification.chat._id)
       .map((n) => n._id);
-    if (messages.length > 0) deleteNotification(JSON.stringify(messages));
+    if (messages.length > 0)
+      deleteNotification(JSON.stringify(messages), notification.chat._id);
     // if (location.pathname !== "/chats") navigate("/chats");
     // setSelectedChat(notification.chat);
   };

@@ -1,5 +1,19 @@
 @import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@300&display=swap");
 
+html,
+body,
+#root,
+.App {
+  --color-green-to-blue-1: #38b29e;
+  --color-green-to-blue-2: #37aba5;
+  --color-green-to-blue-3: #36a4ac;
+  --color-green-to-blue-4: #359db3;
+  --color-green-to-blue-5: #3497b9;
+  --color-green-to-blue-6: #3390c0;
+  --color-green-to-blue-7: #3289c7;
+  --color-green-to-blue-8: #3182ce;
+}
+
 .App {
   min-height: 100vh;
   display: flex;

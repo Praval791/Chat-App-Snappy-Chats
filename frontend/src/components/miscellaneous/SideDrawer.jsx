@@ -20,12 +20,14 @@ import {
   Spinner,
   Avatar,
   AvatarBadge,
+  MenuGroup,
 } from "@chakra-ui/react";
 import {
   ArrowBackIcon,
   BellIcon,
   CheckIcon,
   ChevronDownIcon,
+  CloseIcon,
   SearchIcon,
 } from "@chakra-ui/icons";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -60,7 +62,7 @@ function SideDrawer() {
     setChats,
   } = ChatState();
 
-  const [isMobile] = useMediaQuery("(min-width: 550px)");
+  const [isNotMobile] = useMediaQuery("(min-width: 600px)");
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
@@ -140,7 +142,7 @@ function SideDrawer() {
     }
   };
 
-  const deleteNotification = async (messages, chatId) => {
+  const deleteNotification = async (messages) => {
     try {
       const config = {
         headers: {
@@ -156,25 +158,26 @@ function SideDrawer() {
         config
       );
       setNotificationsData(data);
-      if (location.pathname !== "/chats") navigate("/chats");
-      let chatToBeSelectable = chats.find((chat) => chat._id + "" == chatId);
-      setSelectedChat(chatToBeSelectable);
     } catch (error) {
       console.error("failed to fetch notificationsData");
-      if (location.pathname !== "/chats") navigate("/chats");
-      let chatToBeSelectable = chats.find((chat) => chat._id + "" == chatId);
-      setSelectedChat(chatToBeSelectable);
     }
   };
 
-  const handleNotificationClick = async (notification) => {
+  const handleNotificationClick = async (notificationChatId, directToChat) => {
+    // debugger;
+    console.log(directToChat);
     let messages = notificationsData.notifications
-      .filter((n) => n.chat._id === notification.chat._id)
+      .filter((n) => n.chat._id === notificationChatId)
       .map((n) => n._id);
-    if (messages.length > 0)
-      deleteNotification(JSON.stringify(messages), notification.chat._id);
-    // if (location.pathname !== "/chats") navigate("/chats");
-    // setSelectedChat(notification.chat);
+    if (messages.length > 0) {
+      await deleteNotification(JSON.stringify(messages));
+      if (!directToChat) return;
+      if (location.pathname !== "/chats") navigate("/chats");
+      let chatToBeSelectable = chats.find(
+        (chat) => chat._id + "" === notificationChatId
+      );
+      setSelectedChat(chatToBeSelectable);
+    }
   };
 
   return (
@@ -209,14 +212,14 @@ function SideDrawer() {
           </Tooltip>
         )}
         <Text fontSize="2xl" fontFamily="Work sans">
-          {isMobile ? (
+          {isNotMobile ? (
             <SnappyChatsLogo width="100%" height="100%" />
           ) : (
             <SmallLogo />
           )}
         </Text>
         <div>
-          <Menu>
+          <Menu isLazy="true">
             <MenuButton p={1}>
               <NotificationBadge
                 count={notificationsData?.notifications.length}
@@ -224,21 +227,74 @@ function SideDrawer() {
               />
               <BellIcon fontSize="2xl" m={1} />
             </MenuButton>
-            <MenuList pl={2} maxHeight="40vh" overflowY="scroll">
-              {!notificationsData?.notifications.length && "No New Messages"}
-              {notificationsData?.notifications.map((notification) => (
-                <MenuItem
-                  key={notification._id}
-                  onClick={() => handleNotificationClick(notification)}
+            <MenuList
+              pl={2}
+              maxHeight="40vh"
+              overflowY="scroll"
+              maxWidth={isNotMobile ? "30em" : "70vw"}
+            >
+              {!notificationsData?.notifications.length ? (
+                <Text
+                  as="span"
+                  fontWeight="600"
+                  color="#359DB3"
+                  fontSize="1em"
+                  title="New Messages"
+                  wordBreak="break-word"
                 >
-                  {notification.chat.isGroupChat
-                    ? `New Message in ${notification.chat.chatName}`
-                    : `New Message from ${getSender(
-                        user.user,
-                        notification.chat.users
-                      )}`}
-                </MenuItem>
-              ))}
+                  No New Messages
+                </Text>
+              ) : (
+                <MenuGroup
+                  fontWeight="600"
+                  color="#359DB3"
+                  fontSize="1em"
+                  title="New Messages"
+                  wordBreak="break-word"
+                  textAlign="start"
+                  marginTop="0"
+                >
+                  <MenuDivider />
+                  {notificationsData.notifications.map((notification) => (
+                    <MenuItem
+                      css={{
+                        "&>*": {
+                          display: "-webkit-box",
+                          WebkitLineClamp: "2",
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        },
+                      }}
+                      // isolation="isolate"
+                      key={notification._id}
+                      onClick={() =>
+                        handleNotificationClick(notification.chat._id, true)
+                      }
+                      icon={
+                        <CloseIcon
+                          fontSize={"0.65rem"}
+                          cursor="pointer"
+                          zIndex={"calc(inherit+10)"}
+                          onClick={() =>
+                            handleNotificationClick(
+                              notification.chat._id,
+                              false
+                            )
+                          }
+                        />
+                      }
+                    >
+                      {notification.chat.isGroupChat
+                        ? `New Message in ${notification.chat.chatName}`
+                        : `New Message from ${getSender(
+                            user.user,
+                            notification.chat.users
+                          )}`}
+                    </MenuItem>
+                  ))}
+                </MenuGroup>
+              )}
             </MenuList>
           </Menu>
           <Menu>

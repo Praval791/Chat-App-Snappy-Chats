@@ -9,6 +9,10 @@ import {
   sendForgotPasswordOtp,
   verifyForgotPasswordOtp,
   reSendForgotPasswordOtp,
+  updateAvatar,
+  updateName,
+  updateEmail,
+  updatePhoneNumber,
 } from "../controllers/user.js";
 import authenticateUser from "../middlewares/authentication.js";
 const router = express.Router();
@@ -25,4 +29,9 @@ router.post("/password/reset/send", sendForgotPasswordOtp);
 router.post("/password/reset/resend", reSendForgotPasswordOtp);
 router.post("/password/reset/verify", verifyForgotPasswordOtp);
 router.get("/allUsers", authenticateUser, allUsers);
+router.patch("/update/avatar", authenticateUser, updateAvatar);
+router.patch("/update/name", authenticateUser, updateName);
+router.patch("/update/email", authenticateUser, updateEmail);
+router.patch("/update/phoneNumber", authenticateUser, updatePhoneNumber);
+
 export default router;

@@ -356,6 +356,81 @@ const verifyForgotPasswordOtp = async (req, res) => {
   });
 };
 
+const updateAvatar = async (req, res) => {
+  var { avatar } = req.body;
+  if (!avatar.public_id)
+    throw new BadRequestError("Please Provide avatar public_id");
+  if (!avatar.url) throw new BadRequestError("Please Provide avatar data url");
+
+  const { result } = await cloudinary.v2.uploader.destroy(avatar.public_id);
+  if (result === "not found")
+    throw new BadRequestError("Please provide correct public_id");
+  if (result !== "ok")
+    throw new Error(
+      "Unable to update user Avatar, The public_id might not exist in database."
+    );
+
+  const myCloud = await cloudinary.v2.uploader.upload(avatar.url, {
+    public_id: avatar.public_id,
+  });
+  avatar = {
+    public_id: myCloud.public_id,
+    url: myCloud.secure_url,
+  };
+
+  const user = await User.findByIdAndUpdate(req.user._id, { avatar });
+
+  if (!user) throw new Error("Unable to update user Avatar, Try again later");
+  res.status(200).json({
+    avatar,
+    status: "success",
+    text: "User's Avatar update successfully!",
+  });
+};
+
+const updateName = async (req, res) => {
+  const { name } = req.body;
+  if (!name) throw new BadRequestError("Please Provide new Name");
+  const user = await User.findByIdAndUpdate(req.user._id, { name });
+
+  if (!user) throw new Error("Unable to update User's Name, Try again later");
+
+  res.status(200).json({
+    name,
+    status: "success",
+    text: "User's Name update successfully!",
+  });
+};
+
+const updateEmail = async (req, res) => {
+  const { email } = req.body;
+  if (!email) throw new BadRequestError("Please Provide new Email");
+  const user = await User.findByIdAndUpdate(req.user._id, { email });
+
+  if (!user) throw new Error("Unable to update user Email, Try again later");
+
+  res.status(200).json({
+    email,
+    status: "success",
+    text: "User's Email update successfully!",
+  });
+};
+
+const updatePhoneNumber = async (req, res) => {
+  const { phoneNumber } = req.body;
+  if (!phoneNumber) throw new BadRequestError("Please Provide new PhoneNumber");
+  const user = await User.findByIdAndUpdate(req.user._id, { phoneNumber });
+
+  if (!user)
+    throw new Error("Unable to update user PhoneNumber, Try again later");
+
+  res.status(200).json({
+    phoneNumber,
+    status: "success",
+    text: "User's Phone-Number update successfully!",
+  });
+};
+
 export {
   signup,
   login,
@@ -366,4 +441,8 @@ export {
   sendForgotPasswordOtp,
   verifyForgotPasswordOtp,
   reSendForgotPasswordOtp,
+  updateAvatar,
+  updateName,
+  updateEmail,
+  updatePhoneNumber,
 };

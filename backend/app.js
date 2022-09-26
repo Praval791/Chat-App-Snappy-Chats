@@ -18,7 +18,6 @@ import errorHandlerMiddleware from "./middlewares/error-handler.js";
 
 // authentication middlewares
 import authenticateUser from "./middlewares/authentication.js";
-import { createSocket } from "dgram";
 
 config();
 const app = express();

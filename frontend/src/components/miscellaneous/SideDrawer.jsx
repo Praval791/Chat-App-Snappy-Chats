@@ -165,7 +165,6 @@ function SideDrawer() {
 
   const handleNotificationClick = async (notificationChatId, directToChat) => {
     // debugger;
-    console.log(directToChat);
     let messages = notificationsData.notifications
       .filter((n) => n.chat._id === notificationChatId)
       .map((n) => n._id);
@@ -318,7 +317,12 @@ function SideDrawer() {
                       : "linear-gradient(315deg, #a40606 0%, #d98324 74%)"
                   }
                 >
-                  <CheckIcon color="black" w="100%" h="100%" p={0.5} />
+                  {user.user.isVerifiedEmail ||
+                  user.user.isVerifiedPhoneNumber ? (
+                    <CheckIcon color="black" w="100%" h="100%" p={0.5} />
+                  ) : (
+                    <CloseIcon color="black" w="100%" h="100%" p={0.5} />
+                  )}
                 </AvatarBadge>
               </Avatar>
             </MenuButton>

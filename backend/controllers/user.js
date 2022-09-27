@@ -378,11 +378,15 @@ const updateAvatar = async (req, res) => {
     url: myCloud.secure_url,
   };
 
-  const user = await User.findByIdAndUpdate(req.user._id, { avatar });
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { avatar },
+    { runValidators: true, new: true }
+  );
 
   if (!user) throw new Error("Unable to update user Avatar, Try again later");
   res.status(200).json({
-    avatar,
+    avatar: user.avatar,
     status: "success",
     text: "User's Avatar update successfully!",
   });
@@ -391,12 +395,16 @@ const updateAvatar = async (req, res) => {
 const updateName = async (req, res) => {
   const { name } = req.body;
   if (!name) throw new BadRequestError("Please Provide new Name");
-  const user = await User.findByIdAndUpdate(req.user._id, { name });
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { name },
+    { new: true }
+  );
 
   if (!user) throw new Error("Unable to update User's Name, Try again later");
 
   res.status(200).json({
-    name,
+    name: user.name,
     status: "success",
     text: "User's Name update successfully!",
   });
@@ -405,12 +413,17 @@ const updateName = async (req, res) => {
 const updateEmail = async (req, res) => {
   const { email } = req.body;
   if (!email) throw new BadRequestError("Please Provide new Email");
-  const user = await User.findByIdAndUpdate(req.user._id, { email });
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { email, isVerifiedEmail: false },
+    { new: true }
+  );
 
   if (!user) throw new Error("Unable to update user Email, Try again later");
 
   res.status(200).json({
-    email,
+    email: user.email,
+    isVerifiedEmail: user.isVerifiedEmail,
     status: "success",
     text: "User's Email update successfully!",
   });
@@ -419,13 +432,18 @@ const updateEmail = async (req, res) => {
 const updatePhoneNumber = async (req, res) => {
   const { phoneNumber } = req.body;
   if (!phoneNumber) throw new BadRequestError("Please Provide new PhoneNumber");
-  const user = await User.findByIdAndUpdate(req.user._id, { phoneNumber });
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { phoneNumber, isVerifiedPhoneNumber: false },
+    { new: true }
+  );
 
   if (!user)
     throw new Error("Unable to update user PhoneNumber, Try again later");
 
   res.status(200).json({
-    phoneNumber,
+    phoneNumber: user.phoneNumber,
+    isVerifiedPhoneNumber: user.isVerifiedPhoneNumber,
     status: "success",
     text: "User's Phone-Number update successfully!",
   });

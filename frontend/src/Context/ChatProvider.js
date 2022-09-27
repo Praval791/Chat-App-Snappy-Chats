@@ -16,6 +16,15 @@ const ChatProvider = ({ children }) => {
     notifications: [],
   });
   const [chats, setChats] = useState([]);
+  const updateUser = (keys, vals, { multiple = false }) => {
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (!multiple) userInfo.user[keys] = vals;
+
+    for (let i = 0; i < keys.length; i++) userInfo.user[keys[i]] = vals[i];
+
+    setUser(userInfo);
+    localStorage.setItem("userInfo", JSON.stringify(userInfo));
+  };
 
   const fetchAndSetNotifications = async (user) => {
     try {
@@ -49,6 +58,7 @@ const ChatProvider = ({ children }) => {
         setSelectedChat,
         user,
         setUser,
+        updateUser,
         notificationsData,
         setNotificationsData,
         chats,

@@ -18,6 +18,8 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { ChatState } from "../../Context/ChatProvider";
 import CLICK_TO_EDIT from "../../assets/ClicktoEdit.png";
+import axios from "axios";
+import { apiUrl } from "../../config/environmentVar";
 
 const PersonalSettings = () => {
   const [name, setName] = useState("");
@@ -30,7 +32,7 @@ const PersonalSettings = () => {
   const toast = useToast();
   const avatarSize = useBreakpointValue({ base: "md", sm: "xl", md: "2xl" });
   const elementRef = useRef(null);
-  const { user } = ChatState();
+  const { user, updateUser } = ChatState();
 
   const postAvatar = (e) => {
     setDisabledChangeName(true);
@@ -66,8 +68,141 @@ const PersonalSettings = () => {
     setWidth(elementRef.current.getBoundingClientRect().width);
   }, []);
 
-  const changeAvatar = async () => {};
-  const changeName = async () => {};
+  const changeAvatar = async () => {
+    setDisabledChangeName(true);
+    setLoadingChangeAvatar(true);
+    if (avatar === CLICK_TO_EDIT) {
+      toast({
+        title: "Please select an image.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoadingChangeAvatar(false);
+      setDisabledChangeName(false);
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.patch(
+        `${apiUrl}/api/v1/user/update/avatar`,
+        {
+          avatar: {
+            url: avatar,
+            public_id: user.user.avatar.public_id,
+          },
+        },
+        config
+      );
+
+      if (data.status === "success") {
+        updateUser("avatar", data.avatar);
+        toast({
+          title: "Avatar updated successfully",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+      } else {
+        toast({
+          title: "Avatar updation failed!",
+          description: "try again later",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+      }
+      setLoadingChangeAvatar(false);
+      setDisabledChangeName(false);
+    } catch (error) {
+      setLoadingChangeAvatar(false);
+      setDisabledChangeName(false);
+      toast({
+        title: "Avatar updation failed!",
+        description: error.response.data.msg.text,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+    }
+  };
+  const changeName = async () => {
+    setLoadingChangeName(true);
+    setDisabledChangeAvatar(true);
+
+    let checkName = name.trim();
+    setName(checkName);
+    if (checkName.length < 3 || checkName.length > 50) {
+      toast({
+        title: "Please Enter a valid name",
+        description:
+          "Name must not contain any leading or trailing spaces and must be 3 to 50 characters long.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoadingChangeName(false);
+      setDisabledChangeAvatar(false);
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.patch(
+        `${apiUrl}/api/v1/user/update/name`,
+        {
+          name: checkName,
+        },
+        config
+      );
+      if (data.status === "success") {
+        updateUser("name", data.name);
+        toast({
+          title: "Name updated successfully",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+      } else {
+        toast({
+          title: "Name updation failed!",
+          description: "try again later",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+      }
+      setLoadingChangeName(false);
+      setDisabledChangeAvatar(false);
+    } catch (error) {
+      toast({
+        title: "Name updation failed!",
+        description: error.response.data.msg.text,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoadingChangeName(false);
+      setDisabledChangeAvatar(false);
+    }
+  };
 
   return (
     <form style={{ width: "100%" }}>

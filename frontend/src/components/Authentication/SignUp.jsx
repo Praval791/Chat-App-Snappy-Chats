@@ -96,7 +96,7 @@ const SignUp = () => {
       toast({
         title: "Please Enter a valid Email",
         description:
-          "Without spaces and in the format of a valid email address. Eg. guest12@domain.com",
+          "Without spaces and As a valid email address. Eg. guest12@domain.com",
         status: "warning",
         duration: 5000,
         isClosable: true,
@@ -109,7 +109,7 @@ const SignUp = () => {
       toast({
         title: "Please Enter a valid Phone Number",
         description:
-          "starting with country code and then space then 10 digit number. Eg. +91 xxxxxxxxxx",
+          "starting with country code and then 10 digit number separated by space. Eg. +91 xxxxxxxxxx",
         status: "warning",
         duration: 5000,
         isClosable: true,

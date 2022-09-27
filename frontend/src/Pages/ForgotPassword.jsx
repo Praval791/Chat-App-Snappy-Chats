@@ -52,7 +52,7 @@ const ForgotPassword = () => {
       toast({
         title: "Please Enter a valid Email",
         description:
-          "Without spaces and in the format of a valid email address. Eg. guest12@domain.com",
+          "Without spaces and As a valid email address. Eg. guest12@domain.com",
         status: "warning",
         duration: 5000,
         isClosable: true,
@@ -111,7 +111,7 @@ const ForgotPassword = () => {
       toast({
         title: "Please Enter a valid Email",
         description:
-          "Without spaces and in the format of a valid email address. Eg. guest12@domain.com",
+          "Without spaces and As a valid email address. Eg. guest12@domain.com",
         status: "warning",
         duration: 5000,
         isClosable: true,
@@ -171,7 +171,7 @@ const ForgotPassword = () => {
       toast({
         title: "Please Enter a valid Email",
         description:
-          "Without spaces and in the format of a valid email address. Eg. guest12@domain.com",
+          "Without spaces and As a valid email address. Eg. guest12@domain.com",
         status: "warning",
         duration: 5000,
         isClosable: true,

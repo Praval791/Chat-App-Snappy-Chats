@@ -100,7 +100,6 @@ const PersonalSettings = () => {
         },
         config
       );
-
       if (data.status === "success") {
         updateUser("avatar", data.avatar);
         toast({
@@ -127,7 +126,7 @@ const PersonalSettings = () => {
       setDisabledChangeName(false);
       toast({
         title: "Avatar updation failed!",
-        description: error.response.data.msg.text,
+        description: error.response.data.msg.text || "Try again later!!",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -193,7 +192,7 @@ const PersonalSettings = () => {
     } catch (error) {
       toast({
         title: "Name updation failed!",
-        description: error.response.data.msg.text,
+        description: error.response.data.msg.text || "Try again later!!",
         status: "error",
         duration: 5000,
         isClosable: true,

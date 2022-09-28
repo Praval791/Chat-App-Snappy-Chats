@@ -212,7 +212,11 @@ function SideDrawer() {
         )}
         <Text fontSize="2xl" fontFamily="Work sans">
           {isNotMobile ? (
-            <SnappyChatsLogo width="100%" height="100%" />
+            <SnappyChatsLogo
+              width="100%"
+              height="100%"
+              style={{ maxWidth: "10em" }}
+            />
           ) : (
             <SmallLogo />
           )}

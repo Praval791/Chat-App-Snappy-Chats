@@ -95,7 +95,7 @@ const ContactSettings = () => {
     } catch (error) {
       toast({
         title: "Email updation failed!",
-        description: error.response.data.msg.text,
+        description: error.response.data.msg.text || "Try again later!!",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -169,7 +169,7 @@ const ContactSettings = () => {
     } catch (error) {
       toast({
         title: "Phone Number updation failed!",
-        description: error.response.data.msg.text,
+        description: error.response.data.msg.text || "Try again later!!",
         status: "error",
         duration: 5000,
         isClosable: true,

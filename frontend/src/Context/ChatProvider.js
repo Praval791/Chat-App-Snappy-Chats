@@ -16,7 +16,7 @@ const ChatProvider = ({ children }) => {
     notifications: [],
   });
   const [chats, setChats] = useState([]);
-  const updateUser = (keys, vals, { multiple = false }) => {
+  const updateUser = (keys, vals, { multiple = false } = {}) => {
     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
     if (!multiple) userInfo.user[keys] = vals;
 

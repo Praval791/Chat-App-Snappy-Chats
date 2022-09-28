@@ -1,36 +1,45 @@
 import {
   Box,
   Button,
+  ButtonGroup,
+  Container,
   FormControl,
   FormLabel,
   Input,
   InputGroup,
   InputLeftAddon,
+  Stack,
   Tooltip,
+  useMediaQuery,
   VStack,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ChatState } from "../../Context/ChatProvider";
 
 const VerificationSettings = () => {
   const { user } = ChatState();
+  const [dirRow] = useMediaQuery("(min-width: 600px)");
 
-  const [disabledVerifyEmail, setDisabledVerifyEmail] = useState(false);
-  const [loadingVerifyEmail, setLoadingVerifyEmail] = useState(false);
-  const [disabledVerifyPhoneNumber, setDisabledVerifyPhoneNumber] =
+  const [isDisabledSendNewVerifEmail, setIsDisabledSendNewVerifEmail] =
     useState(false);
-  const [loadingVerifyPhoneNumber, setLoadingVerifyPhoneNumber] =
+  const [isLoadingSendNewVerifEmail, setIsLoadingSendNewVerifEmail] =
     useState(false);
+  const [isDisabledResendVerifEmail, setIsDisabledResendVerifEmail] =
+    useState(false);
+  const [isLoadingResendVerifEmail, setIsLoadingResendVerifEmail] =
+    useState(false);
+  const [isDisabledSendNewVerifSMS, setIsDisabledSendNewVerifSMS] =
+    useState(false);
+  const [isLoadingSendNewVerifSMS, setIsLoadingSendNewVerifSMS] =
+    useState(false);
+  const [isDisabledResendVerifSMS, setIsDisabledResendVerifSMS] =
+    useState(false);
+  const [isLoadingResendVerifSMS, setIsLoadingResendVerifSMS] = useState(false);
 
-  const verifyEmail = async () => {};
-  const verifyPhoneNumber = async () => {};
-
-  // useEffect(() => {
-  //   if (user.user.isVerified) {
-  //     setDisabledVerifyEmail(true);
-  //     setDisabledVerifyPhoneNumber(true);
-  //   }
-  // }, [user.user.phoneNumber, user.user.email, user.user.isVerified]);
+  const sendNewVerifEmail = async () => {};
+  const resendVerifEmail = async () => {};
+  const sendNewVerifSMS = async () => {};
+  const resendVerifSMS = async () => {};
 
   return (
     <form style={{ width: "100%" }}>
@@ -107,20 +116,46 @@ const VerificationSettings = () => {
                 />
               </InputGroup>
             </Box>
-            <Button
-              colorScheme="blue"
-              variant="outline"
-              width="100%"
-              bg="#ebf8ff"
-              mt="2vh"
-              className="noOutline"
-              onClick={verifyEmail}
-              loadingText="Sending..."
-              isDisabled={disabledVerifyEmail}
-              isLoading={loadingVerifyEmail}
+            <ButtonGroup
+              w="100%"
+              flexDir={dirRow ? "row" : "column"}
+              gap="1em"
+              css={{
+                "&>*:not(style)~*:not(style)": {
+                  "-webkit-margin-start": "0",
+                  "margin-inline-start": "0",
+                },
+              }}
             >
-              Get Verification link
-            </Button>
+              <Button
+                colorScheme="blue"
+                variant="outline"
+                width="100%"
+                bg="#ebf8ff"
+                mt="2vh"
+                className="noOutline"
+                onClick={sendNewVerifEmail}
+                loadingText="Sending..."
+                isDisabled={isDisabledSendNewVerifEmail}
+                isLoading={isLoadingSendNewVerifEmail}
+              >
+                Send New Verification Email
+              </Button>
+              <Button
+                colorScheme="red"
+                variant="outline"
+                width="100%"
+                bg="#FFF5F5"
+                mt={dirRow ? "2vh" : "0"}
+                className="noOutline"
+                onClick={resendVerifEmail}
+                loadingText="Sending..."
+                isDisabled={isDisabledResendVerifEmail}
+                isLoading={isLoadingResendVerifEmail}
+              >
+                Resend Verification Email
+              </Button>
+            </ButtonGroup>
           </FormControl>
         )}
         {user.user.isVerifiedPhoneNumber ? (
@@ -195,20 +230,46 @@ const VerificationSettings = () => {
                 />
               </InputGroup>
             </Box>
-            <Button
-              colorScheme="blue"
-              variant="outline"
-              width="100%"
-              mt="2vh"
-              bg="#ebf8ff"
-              className="noOutline"
-              onClick={verifyPhoneNumber}
-              loadingText="Sending..."
-              isDisabled={disabledVerifyPhoneNumber}
-              isLoading={loadingVerifyPhoneNumber}
+            <ButtonGroup
+              w="100%"
+              flexDir={dirRow ? "row" : "column"}
+              gap="1em"
+              css={{
+                "&>*:not(style)~*:not(style)": {
+                  "-webkit-margin-start": "0",
+                  "margin-inline-start": "0",
+                },
+              }}
             >
-              Get Verification link
-            </Button>
+              <Button
+                colorScheme="blue"
+                variant="outline"
+                width="100%"
+                mt="2vh"
+                bg="#ebf8ff"
+                className="noOutline"
+                onClick={sendNewVerifSMS}
+                loadingText="Sending..."
+                isDisabled={isDisabledSendNewVerifSMS}
+                isLoading={isLoadingSendNewVerifSMS}
+              >
+                Send New Verification SMS
+              </Button>
+              <Button
+                colorScheme="red"
+                variant="outline"
+                width="100%"
+                bg="#FFF5F5"
+                className="noOutline"
+                mt={dirRow ? "2vh" : "0"}
+                onClick={resendVerifSMS}
+                loadingText="Sending..."
+                isDisabled={isDisabledResendVerifSMS}
+                isLoading={isLoadingResendVerifSMS}
+              >
+                Resend Verification SMS
+              </Button>
+            </ButtonGroup>
           </FormControl>
         )}
       </VStack>

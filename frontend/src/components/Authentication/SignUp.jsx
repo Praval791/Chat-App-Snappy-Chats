@@ -187,7 +187,7 @@ const SignUp = () => {
       setLoading(false);
       toast({
         title: "Error Occurred!",
-        description: error.response.data.msg.text,
+        description: error.response.data.msg.text || "Try again later!!",
         status: "error",
         duration: 5000,
         isClosable: true,

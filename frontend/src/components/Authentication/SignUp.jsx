@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { EmailIcon, PhoneIcon } from "@chakra-ui/icons";
 import axios from "axios";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   apiUrl,
@@ -21,6 +21,7 @@ import {
 } from "../../config/environmentVar";
 
 const SignUp = () => {
+  const inputsRef = useRef([]);
   const [show1, setShow1] = useState(false);
   const [show2, setShow2] = useState(false);
   const toast = useToast();
@@ -32,6 +33,26 @@ const SignUp = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [avatar, setAvatar] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const handleKeyDown = (e) => {
+    const currEleIndex = inputsRef.current.indexOf(e.target);
+    switch (e.keyCode) {
+      case 13: // Enter
+        if (currEleIndex + 1 < inputsRef.current.length)
+          inputsRef.current[currEleIndex + 1].focus();
+        else submitHandler();
+        break;
+      case 38: // up
+        if (currEleIndex - 1 >= 0) inputsRef.current[currEleIndex - 1].focus();
+        break;
+      case 40: // down
+        if (currEleIndex + 1 < inputsRef.current.length)
+          inputsRef.current[currEleIndex + 1].focus();
+        break;
+      default:
+        break;
+    }
+  };
 
   const postDetails = (e) => {
     setLoading(true);
@@ -202,6 +223,9 @@ const SignUp = () => {
         <FormControl isRequired>
           <FormLabel>Name</FormLabel>
           <Input
+            onKeyDown={handleKeyDown}
+            id="signup__name"
+            ref={(el) => (inputsRef.current[0] = el)}
             className="noOutline"
             placeholder="Enter Your Name"
             onChange={(e) => setName(e.target.value)}
@@ -215,6 +239,9 @@ const SignUp = () => {
               children={<EmailIcon color="gray" />}
             />
             <Input
+              onKeyDown={handleKeyDown}
+              id="signup__email"
+              ref={(el) => (inputsRef.current[1] = el)}
               className="noOutline"
               type="email"
               placeholder="Enter Your Email Address"
@@ -230,6 +257,9 @@ const SignUp = () => {
               children={<PhoneIcon color="gray" />}
             />
             <Input
+              ref={(el) => (inputsRef.current[2] = el)}
+              onKeyDown={handleKeyDown}
+              id="signup__phone_number"
               className="noOutline"
               type="text"
               placeholder="Enter Your Phone Number"
@@ -241,8 +271,12 @@ const SignUp = () => {
           <FormLabel>Password</FormLabel>
           <InputGroup size="md">
             <Input
+              onKeyDown={handleKeyDown}
+              id="signup__password"
+              ref={(el) => (inputsRef.current[3] = el)}
               className="noOutline"
               type={show1 ? "text" : "password"}
+              autoComplete="on"
               placeholder="Enter Password"
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -262,8 +296,12 @@ const SignUp = () => {
           <FormLabel>Confirm Password</FormLabel>
           <InputGroup size="md">
             <Input
+              onKeyDown={handleKeyDown}
+              id="signup__confirm_password"
+              ref={(el) => (inputsRef.current[4] = el)}
               className="noOutline"
               type={show2 ? "text" : "password"}
+              autoComplete="on"
               placeholder="Confirm password"
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
@@ -282,6 +320,9 @@ const SignUp = () => {
         <FormControl>
           <FormLabel>Upload Your Picture</FormLabel>
           <Input
+            onKeyDown={handleKeyDown}
+            id="signup__avatar"
+            ref={(el) => (inputsRef.current[5] = el)}
             className="noOutline"
             type="file"
             p={1.5}

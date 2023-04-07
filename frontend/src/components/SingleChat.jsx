@@ -23,7 +23,6 @@ import { ChatState } from "../Context/ChatProvider";
 import { apiUrl } from "../config/environmentVar";
 
 import { getSender, getSenderFull } from "../config/ChatLogics";
-import animationData from "../animations/typing.json";
 import { useRef } from "react";
 var socket, selectedChatCompare;
 
@@ -32,6 +31,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
+  const [textareaDisable, setTextareaDisable] = useState(false);
   // const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   // const[notificationsEditLoading,setNotificationsEditLoading] = useState(false);
@@ -41,14 +41,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   });
   const toast = useToast();
 
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
   const {
     selectedChat,
     setSelectedChat,
@@ -92,9 +84,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && !event.shiftKey && newMessage) {
+      setNewMessage((message) => message.trim());
       socket.emit("stop typing", selectedChat._id);
-      setNewMessage(newMessage.trim());
-      if (newMessage.trim().length <= 0) {
+      setTextareaDisable(true);
+      let sendableMessage = newMessage.trim();
+      if (sendableMessage.length === 0) {
         toast({
           title: "Error Occurred!",
           description: "can't send empty message",
@@ -103,7 +97,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           isClosable: true,
           position: "bottom",
         });
-        setNewMessage("");
+        setTextareaDisable(false);
         return;
       }
       try {
@@ -113,19 +107,20 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             Authorization: `Bearer ${user.token}`,
           },
         };
-        setNewMessage("");
         const { data } = await axios.post(
           `${apiUrl}/api/v1/message/`,
           {
-            content: newMessage.trim(),
+            content: sendableMessage,
             chatId: selectedChat._id,
           },
           config
         );
+        setTextareaDisable(false);
         setNewMessage("");
         socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
+        setTextareaDisable(false);
         toast({
           title: "Error Occurred!",
           description: "Failed to send the Message",
@@ -184,7 +179,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   }, [selectedChat]);
 
   useEffect(() => {
-    socket.on("message received", (newMessageReceived) => {
+    const onMessageReceived = (newMessageReceived) => {
       if (
         !selectedChatCompare ||
         selectedChatCompare._id !== newMessageReceived.chat._id
@@ -203,7 +198,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       } else {
         setMessages([...messages, newMessageReceived]);
       }
-    });
+    };
+    socket.on("message received", onMessageReceived);
+    return () => {
+      socket.off("message received", onMessageReceived);
+    };
   });
 
   const typingHandler = (e) => {
@@ -322,7 +321,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   },
                 }}
               >
-                <ScrollableChat messages={messages} />
+                <ScrollableChat messages={messages} isTyping={isTyping} />
               </Box>
             )}
 
@@ -332,24 +331,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               isRequired
               mt={3}
             >
-              {isTyping ? (
-                <div>
-                  <Lottie
-                    options={defaultOptions}
-                    // height={50}
-                    width={70}
-                    style={{ marginBottom: 15, marginLeft: 0 }}
-                  />
-                </div>
-              ) : (
-                <></>
-              )}
               <Textarea
                 variant="filled"
                 bg="#E0E0E0"
                 placeholder="Enter a message.."
                 value={newMessage}
                 onChange={typingHandler}
+                isDisabled={textareaDisable}
               />
             </FormControl>
           </Box>

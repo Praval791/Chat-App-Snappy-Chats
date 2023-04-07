@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import {
   useToast,
@@ -16,6 +16,8 @@ import { EmailIcon } from "@chakra-ui/icons";
 import { apiUrl, emailRegex } from "../../config/environmentVar";
 
 const Login = () => {
+  const passwordInputRef = useRef(null);
+  const emailInputRef = useRef(null);
   const [show, setShow] = useState(false);
   const toast = useToast();
   const [email, setEmail] = useState("");
@@ -87,6 +89,10 @@ const Login = () => {
     }
   };
 
+  useEffect(() => {
+    emailInputRef.current.focus();
+  }, []);
+
   return (
     <form style={{ width: "100%" }}>
       <VStack spacing="10px">
@@ -98,11 +104,17 @@ const Login = () => {
               children={<EmailIcon color="gray" />}
             />
             <Input
+              id="login__email"
               className="noOutline"
               value={email}
               type="email"
               placeholder="Enter Your Email Address"
               onChange={(e) => setEmail(e.target.value)}
+              ref={emailInputRef}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === "ArrowDown")
+                  passwordInputRef.current.focus();
+              }}
             />
           </InputGroup>
         </FormControl>
@@ -111,10 +123,17 @@ const Login = () => {
           <InputGroup size="md">
             <Input
               className="noOutline"
+              id="login__password"
               value={password}
+              autoComplete="on"
               onChange={(e) => setPassword(e.target.value)}
               type={show ? "text" : "password"}
               placeholder="Enter password"
+              ref={passwordInputRef}
+              onKeyDown={(e) => {
+                if (e.key === "ArrowUp") emailInputRef.current.focus();
+                if (e.key === "Enter") submitHandler();
+              }}
             />
             <InputRightElement width="4.5rem">
               <Button

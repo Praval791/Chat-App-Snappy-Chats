@@ -1,3 +1,4 @@
+import animationData from "../animations/typing.json";
 import { Avatar } from "@chakra-ui/avatar";
 import { Tooltip } from "@chakra-ui/tooltip";
 import ScrollableFeed from "react-scrollable-feed";
@@ -8,12 +9,26 @@ import {
   isSameUser,
 } from "../config/ChatLogics";
 import { ChatState } from "../Context/ChatProvider";
+import { useEffect, useRef } from "react";
+import Lottie from "react-lottie";
 
-const ScrollableChat = ({ messages }) => {
+const ScrollableChat = ({ messages, isTyping }) => {
   const { user } = ChatState();
+  const scrollableFeed = useRef(null);
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+  useEffect(() => {
+    scrollableFeed.current.scrollToBottom();
+  }, [messages.length]);
 
   return (
-    <ScrollableFeed>
+    <ScrollableFeed ref={scrollableFeed}>
       {messages &&
         messages.map((m, i) => (
           <div style={{ display: "flex" }} key={m._id}>
@@ -46,6 +61,18 @@ const ScrollableChat = ({ messages }) => {
             </span>
           </div>
         ))}
+      {!isTyping ? (
+        <div>
+          <Lottie
+            options={defaultOptions}
+            // height={50}
+            width={70}
+            style={{ margin: "10px 0px" }}
+          />
+        </div>
+      ) : (
+        <></>
+      )}
     </ScrollableFeed>
   );
 };

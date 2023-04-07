@@ -61,7 +61,7 @@ const ScrollableChat = ({ messages, isTyping }) => {
             </span>
           </div>
         ))}
-      {!isTyping ? (
+      {isTyping ? (
         <div>
           <Lottie
             options={defaultOptions}

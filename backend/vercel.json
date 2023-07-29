@@ -1,11 +1,11 @@
 {
     "builds": [
         {
-            "src": "*.js",
-            "use": "@now/node"
+            "src": "./app.js",
+            "use": "@vercel/node"
         }
     ],
-    "rewrites": [
+    "routes": [
         {
             "source": "/(.*)",
             "destination": "/"

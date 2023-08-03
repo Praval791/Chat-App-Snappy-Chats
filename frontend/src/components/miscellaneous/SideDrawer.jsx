@@ -42,7 +42,7 @@ import { getSender } from "../../config/ChatLogics";
 import UserListItem from "../userAvatar/UserListItem";
 
 import SnappyChatsLogo from "../../assets/SnappyChatsLogo";
-import SmallLogo from "../../assets/SmallLogo";
+import SmallLogo from "../../assets/SmallLogo.jsx";
 import { apiUrl } from "../../config/environmentVar";
 
 import { ChatState } from "../../Context/ChatProvider";
@@ -187,7 +187,7 @@ function SideDrawer() {
         alignItems="center"
         bg="white"
         w="100%"
-        p="5px 10px 5px 10px"
+        p="5px 10px"
         borderWidth="5px"
       >
         {location.pathname === "/settings" ? (
@@ -218,7 +218,7 @@ function SideDrawer() {
               style={{ maxWidth: "10em" }}
             />
           ) : (
-            <SmallLogo />
+            <SmallLogo height="1em" />
           )}
         </Text>
         <div>
@@ -306,6 +306,7 @@ function SideDrawer() {
               as={Button}
               bg="white"
               rightIcon={<ChevronDownIcon />}
+              p={1}
             >
               <Avatar
                 size="sm"
